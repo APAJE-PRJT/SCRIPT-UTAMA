@@ -31,7 +31,7 @@ local OtherTab = Window:CreateTab("🛠️ Script Lainnya", 4483362458)
 local NotesTab = Window:CreateTab("📝 Notes", 4483362458)
 
 OtherTab:CreateParagraph({
-    Title = "-- SCRIPT UNIVERSAL",
+    Title = "SCRIPT UNIVERSAL",
     Content = "FE DAN VISUAL"
 })
 
@@ -82,6 +82,19 @@ OtherTab:CreateButton({
         })
     end
 })
+
+OtherTab:CreateButton({
+    Name = "FAKE DONATE (gasemua bisa)",
+    Callback = function()
+        loadstring(game:HttpGet("https://pastefy.app/4iqtSMB6/raw"))()
+        Rayfield:Notify({
+            Title = "✅ Script Loaded",
+            Content = "FAKE DONATE",
+            Duration = 3
+        })
+    end
+})
+
 
 -- ===== SCRIPT VIOLANCE =====
 OtherTab:CreateParagraph({
