@@ -1,4 +1,5 @@
 
+
 --==================================================
 -- 🏔️ RAYFIELD MOUNTAIN HUB
 -- Total | Auto Detect | Highlight
@@ -41,6 +42,18 @@ OtherTab:CreateButton({
         Rayfield:Notify({
             Title = "✅ Script Loaded",
             Content = "Eazvy Hub",
+            Duration = 3
+        })
+    end
+})
+
+OtherTab:CreateButton({
+    Name = "INF YIELD (VISUAL)",
+    Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+        Rayfield:Notify({
+            Title = "✅ Script Loaded",
+            Content = "INF YIELD",
             Duration = 3
         })
     end
