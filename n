@@ -105,7 +105,7 @@ OtherTab:CreateParagraph({
 OtherTab:CreateButton({
     Name = "SAVE TELEPORT (NEW UPDATE)",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/APAJE-PRJT/fhsd/refs/heads/main/svtele"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/APAJE-PRJT/TELEPORT-TAMA/refs/heads/main/n"))()
         Rayfield:Notify({
             Title = "✅ Script LOADED",
             Content = "SCRIPT GA SAVED CHECKPOINT OTOMATIS",
