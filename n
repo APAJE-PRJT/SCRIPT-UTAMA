@@ -1,8 +1,4 @@
 print ("https://discord.gg/Hsk4Q5KY2b")
-print ("https://discord.gg/Hsk4Q5KY2b")
-print ("https://discord.gg/Hsk4Q5KY2b")
-print ("https://discord.gg/Hsk4Q5KY2b")
-print ("https://discord.gg/Hsk4Q5KY2b")
 
 --==================================================
 -- 🏔️ RAYFIELD MOUNTAIN HUB
@@ -143,6 +139,7 @@ NotesTab:CreateParagraph({
 -- ===== DATA GUNUNG =====
 local Mountains = {
 
+    ["⛰️ MT GEBOK"] = { placeId = 79510160133540, script = "https://raw.githubusercontent.com/robloxonly981-gif/hjk/refs/heads/main/n" },
     ["⛰️ MT MOROHMOY"] = { placeId = 101195512432960, script = "https://raw.githubusercontent.com/robloxonly981-gif/agfdhd/refs/heads/main/n" },
     ["🚀 MT SPACE X"] = { placeId = 137704808682889, script = "https://raw.githubusercontent.com/robloxonly981-gif/jig/refs/heads/main/n" },
     ["🌈 MT RAINBOW RUSH"] = { placeId = 99041455205954, script = "https://raw.githubusercontent.com/robloxonly981-gif/ghk/refs/heads/main/n" },
