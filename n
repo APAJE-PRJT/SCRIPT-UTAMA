@@ -139,6 +139,8 @@ NotesTab:CreateParagraph({
 -- ===== DATA GUNUNG =====
 local Mountains = {
 
+    ["⛰️ MT YAGESYA V.02"] = { placeId = 82748630433642, script = "https://raw.githubusercontent.com/robloxonly981-gif/yyilyu/refs/heads/main/n" },
+    ["⛰️ MT ERATO(PAKE EMOTE)"] = { placeId = 115911109949585, script = "https://raw.githubusercontent.com/robloxonly981-gif/chj/refs/heads/main/n" },
     ["⛰️ MT GEBOK"] = { placeId = 79510160133540, script = "https://raw.githubusercontent.com/robloxonly981-gif/hjk/refs/heads/main/n" },
     ["⛰️ MT MOROHMOY"] = { placeId = 101195512432960, script = "https://raw.githubusercontent.com/robloxonly981-gif/agfdhd/refs/heads/main/n" },
     ["🚀 MT SPACE X"] = { placeId = 137704808682889, script = "https://raw.githubusercontent.com/robloxonly981-gif/jig/refs/heads/main/n" },
