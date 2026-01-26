@@ -1,3 +1,4 @@
+
 print ("https://discord.gg/Hsk4Q5KY2b")
 
 --==================================================
@@ -138,7 +139,7 @@ NotesTab:CreateParagraph({
 
 -- ===== DATA GUNUNG =====
 local Mountains = {
-
+    ["⛰️ MT ALLSTARS V2"] = { placeId = 118462881909065, script = "https://raw.githubusercontent.com/robloxonly981-gif/DFHS/refs/heads/main/n" },
     ["⛰️ MT YAGESYA V.02"] = { placeId = 82748630433642, script = "https://raw.githubusercontent.com/robloxonly981-gif/yyilyu/refs/heads/main/n" },
     ["⛰️ MT ERATO(PAKE EMOTE)"] = { placeId = 115911109949585, script = "https://raw.githubusercontent.com/robloxonly981-gif/chj/refs/heads/main/n" },
     ["⛰️ MT GEBOK"] = { placeId = 79510160133540, script = "https://raw.githubusercontent.com/robloxonly981-gif/hjk/refs/heads/main/n" },
