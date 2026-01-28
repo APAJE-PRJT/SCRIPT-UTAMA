@@ -1,238 +1,804 @@
-
+print ("SCRIPT JALAN")
 print ("https://discord.gg/Hsk4Q5KY2b")
-
 --==================================================
 -- 🏔️ RAYFIELD MOUNTAIN HUB
--- Total | Auto Detect | Highlight
+-- Auto Detect | User Stats | Optimized
+-- Enhanced Auto Save Settings
 --==================================================
+
+-- ===== SERVICES =====
+local MarketplaceService = game:GetService("MarketplaceService")
+local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
+local placeId = game.PlaceId
+local player = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Stats = game:GetService("Stats")
+local TeleportService = game:GetService("TeleportService")
+
+-- ===== CONFIG SAVE SYSTEM =====
+local SAVE_FOLDER = "NanaoGames"
+local POS_FILE = "PerfStatsPos.json"
+local SETTINGS_FILE = "UserSettings.json"
+
+-- Function untuk load settings
+local function loadSettings()
+    if isfile(SAVE_FOLDER.."/"..SETTINGS_FILE) then
+        local success, data = pcall(function()
+            return HttpService:JSONDecode(readfile(SAVE_FOLDER.."/"..SETTINGS_FILE))
+        end)
+        if success and data then
+            return data
+        end
+    end
+    return {
+        PerfStatsToggle = true,
+        AutoExecuteToggle = true,
+        DiscordCopied = false
+    }
+end
+
+-- Function untuk save settings
+local function saveSettings(settings)
+    if not isfolder(SAVE_FOLDER) then
+        makefolder(SAVE_FOLDER)
+    end
+    pcall(function()
+        writefile(SAVE_FOLDER.."/"..SETTINGS_FILE, HttpService:JSONEncode(settings))
+    end)
+end
+
+-- Load settings awal
+local userSettings = loadSettings()
+
+-- Function untuk load position FPS display
+local function loadPos()
+    if isfile(SAVE_FOLDER.."/"..POS_FILE) then
+        local success, data = pcall(function()
+            return HttpService:JSONDecode(readfile(SAVE_FOLDER.."/"..POS_FILE))
+        end)
+        if success and data then
+            return UDim2.new(data.xs, data.xo, data.ys, data.yo)
+        end
+    end
+end
+
+local function savePos(pos)
+    if not isfolder(SAVE_FOLDER) then
+        makefolder(SAVE_FOLDER)
+    end
+    pcall(function()
+        writefile(SAVE_FOLDER.."/"..POS_FILE, HttpService:JSONEncode({
+            xs = pos.X.Scale,
+            xo = pos.X.Offset,
+            ys = pos.Y.Scale,
+            yo = pos.Y.Offset
+        }))
+    end)
+end
+
+-- ===== GUI PERFORMANCE STATS =====
+local PerfGui = Instance.new("ScreenGui")
+PerfGui.Name = "PerfGui"
+PerfGui.IgnoreGuiInset = true
+PerfGui.Parent = game.CoreGui
+PerfGui.Enabled = userSettings.PerfStatsToggle
+
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 160, 0, 42)
+Frame.Position = loadPos() or UDim2.new(1, -170, 0, 10)
+Frame.BackgroundTransparency = 1
+Frame.Active = true
+Frame.Parent = PerfGui
+
+local Label = Instance.new("TextLabel")
+Label.Size = UDim2.new(1, 0, 1, 0)
+Label.BackgroundTransparency = 1
+Label.Font = Enum.Font.SourceSansBold
+Label.TextSize = 18
+Label.TextXAlignment = Enum.TextXAlignment.Left
+Label.TextYAlignment = Enum.TextYAlignment.Center
+Label.TextWrapped = true
+Label.RichText = true
+Label.TextStrokeTransparency = 0
+Label.TextStrokeColor3 = Color3.new(0,0,0)
+Label.Parent = Frame
+
+-- DRAG + SAVE
+local dragging, dragStart, startPos
+Frame.InputBegan:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = i.Position
+        startPos = Frame.Position
+    end
+end)
+
+Frame.InputEnded:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+        savePos(Frame.Position)
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(i)
+    if dragging and i.UserInputType == Enum.UserInputType.MouseMovement then
+        local d = i.Position - dragStart
+        Frame.Position = UDim2.new(
+            startPos.X.Scale, startPos.X.Offset + d.X,
+            startPos.Y.Scale, startPos.Y.Offset + d.Y
+        )
+    end
+end)
+
+-- FPS + PING LOOP
+local frames, fps = 0, 0
+local lastTick = tick()
+
+RunService.RenderStepped:Connect(function()
+    frames += 1
+    if tick() - lastTick >= 1 then
+        fps = frames
+        frames = 0
+        lastTick = tick()
+
+        local ping = 0
+        pcall(function()
+            ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
+        end)
+
+        local fpsColor =
+            fps <= 25 and Color3.fromRGB(255,60,60) or
+            fps <= 59 and Color3.fromRGB(255,200,0) or
+            Color3.fromRGB(0,255,0)
+
+        local pingColor =
+            ping <= 80 and Color3.fromRGB(0,255,0) or
+            ping <= 150 and Color3.fromRGB(255,200,0) or
+            Color3.fromRGB(255,60,60)
+
+        Label.Text =
+            string.format(
+                '<font color="rgb(%d,%d,%d)">FPS : %d</font>\n<font color="rgb(%d,%d,%d)">PING : %d ms</font>',
+                fpsColor.R*255, fpsColor.G*255, fpsColor.B*255, fps,
+                pingColor.R*255, pingColor.G*255, pingColor.B*255, ping
+            )
+    end
+end)
+
+-- CONTROL (dipakai Rayfield)
+_G.TogglePerfStats = function(state)
+    PerfGui.Enabled = state
+    userSettings.PerfStatsToggle = state
+    saveSettings(userSettings)
+end
+
+-- ===== EXTREME SPAM TEXT =====
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+if player then
+    -- Buat GUI
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "ExtremeSpam"
+    gui.Parent = player:WaitForChild("PlayerGui")
+    
+    -- Background merah
+    local bg = Instance.new("Frame")
+    bg.Size = UDim2.new(1, 0, 1, 0)
+    bg.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+    bg.Parent = gui
+    
+    -- Teks utama
+    local mainText = Instance.new("TextLabel")
+    mainText.Text = "NANAO GAMES LOADED"
+    mainText.TextColor3 = Color3.fromRGB(0, 247, 255)
+    mainText.Size = UDim2.new(0, 500, 0, 70)
+    mainText.Position = UDim2.new(0.5, -250, 0.5, -35)
+    mainText.BackgroundTransparency = 1
+    mainText.Font = Enum.Font.GothamBlack
+    mainText.TextSize = 250
+    mainText.TextStrokeTransparency = 0.5
+    mainText.TextStrokeColor3 = Color3.new(0, 0, 0)
+    mainText.ZIndex = 10
+    mainText.Parent = bg
+    
+    -- BUAT SPAM TEXT
+    local spamLabels = {}
+    local spamCount = 1000
+    
+    for i = 1, spamCount do
+        local spamText = Instance.new("TextLabel")
+        spamText.Size = UDim2.new(0, math.random(150, 400), 0, math.random(20, 40))
+        spamText.Position = UDim2.new(
+            math.random(-20, 120)/100,
+            math.random(-50, 50),
+            math.random(-20, 120)/100,
+            math.random(-30, 30)
+        )
+        spamText.BackgroundTransparency = 1
+        spamText.Text = "GA VIP KE TRACK BG"
+        local greenValue = math.random(150, 255)
+        spamText.TextColor3 = Color3.fromRGB(0, greenValue, 0)
+        spamText.Font = Enum.Font.Code
+        spamText.TextSize = math.random(14, 28)
+        spamText.TextTransparency = math.random(0, 40)/100
+        
+        if math.random(1, 3) == 1 then
+            spamText.Rotation = math.random(-15, 15)
+        end
+        
+        spamText.ZIndex = math.random(1, 5)
+        spamText.Parent = bg
+        
+        task.spawn(function()
+            local variations = {"GA VIP KE TRACK BG", "G4 V1P K3 TR4CK BG", "GA_VIP_KE_TRACK_BG"}
+            while spamText.Parent do
+                spamText.Text = variations[math.random(1, #variations)]
+                task.wait(math.random(10, 30)/10)
+            end
+        end)
+        
+        table.insert(spamLabels, spamText)
+    end
+    
+    -- Animasi fade out
+    local startTime = tick()
+    local fadeDuration = 6
+    
+    local fadeConnection
+    fadeConnection = RunService.Heartbeat:Connect(function()
+        local elapsed = tick() - startTime
+        
+        if elapsed >= fadeDuration then
+            fadeConnection:Disconnect()
+            gui:Destroy()
+            return
+        end
+        
+        local transparency = elapsed / fadeDuration
+        bg.BackgroundTransparency = transparency
+        mainText.TextTransparency = transparency
+        
+        for _, label in ipairs(spamLabels) do
+            label.TextTransparency = transparency
+        end
+    end)
+end
+
+task.wait(5)
 
 -- ===== LOAD RAYFIELD =====
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
--- ===== SERVICES =====
-local MarketplaceService = game:GetService("MarketplaceService")
-local placeId = game.PlaceId
-
-local mapName = "UNKNOWN"
-pcall(function()
-    mapName = MarketplaceService:GetProductInfo(placeId).Name
-end)
-mapName = string.upper(mapName)
+-- Function untuk mendapatkan tanggal pembuatan akun
+local function GetAccountCreationDate(userId)
+    local success, result = pcall(function()
+        local response = game:HttpGet("https://users.roblox.com/v1/users/" .. tostring(userId))
+        local data = HttpService:JSONDecode(response)
+        return data.created
+    end)
+    
+    if success then
+        local dateString = string.sub(result, 1, 10)
+        local year, month, day = string.match(dateString, "(%d+)-(%d+)-(%d+)")
+        return day .. "/" .. month .. "/" .. year
+    end
+    return "Unknown"
+end
 
 -- ===== WINDOW =====
 local Window = Rayfield:CreateWindow({
     Name = "🏔️ LIST MOUNT VIP",
     LoadingTitle = "NANAO GAMES",
-    LoadingSubtitle = "GAK VIP GUWEH DOXXING LU",
-    ConfigurationSaving = { Enabled = false }
+    LoadingSubtitle = "Premium Script",
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = "RayfieldMountainConfig",
+        FileName = "Settings"
+    }
 })
 
 local Tab = Window:CreateTab("⛰️ Gunung", 4483362458)
 local OtherTab = Window:CreateTab("🛠️ Script Lainnya", 4483362458)
-local NotesTab = Window:CreateTab("📝 Notes", 4483362458)
+local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362458)
 
-OtherTab:CreateParagraph({
-    Title = "SCRIPT UNIVERSAL",
-    Content = "FE DAN VISUAL"
+-- ===== USER PROFILE =====
+local player = game.Players.LocalPlayer
+local accountCreationDate = GetAccountCreationDate(player.UserId)
+local currentDateTime = os.date("%H:%M:%S | %d/%m/%Y")
+
+-- Cek first run
+local fileName = "FirstScriptRun_" .. player.UserId .. ".txt"
+local firstRun
+if isfile(fileName) then
+    firstRun = readfile(fileName)
+else
+    firstRun = currentDateTime
+    writefile(fileName, firstRun)
+end
+
+-- Format info
+local info = 
+"👑 Display Name: " .. player.DisplayName .. "\n" ..
+"👤 Username: @" .. player.Name .. "\n" ..
+"🆔 User ID: " .. player.UserId .. "\n" ..
+"📅 Account Created: " .. accountCreationDate .. "\n" ..
+"⏰ First Script Run: " .. firstRun
+
+-- Tampilkan di GUI
+SettingsTab:CreateSection("👤 User Profile")
+SettingsTab:CreateParagraph({
+    Title = "Player Info",
+    Content = info
 })
 
-OtherTab:CreateButton({
-    Name = "Eazvy Hub | Animation & Emotes (FE)",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Eazvy/public-scripts/main/Universal_Animations_Emotes.lua"))()
+-- ===== SETTINGS SECTION =====
+SettingsTab:CreateSection("🎭 Settings")
+
+-- Toggle untuk FPS & Ping Display
+local fpsToggle = SettingsTab:CreateToggle({
+    Name = "📊 FPS & Ping Display",
+    CurrentValue = userSettings.PerfStatsToggle,
+    Flag = "PerfStatsToggle",
+    Callback = function(Value)
+        if _G.TogglePerfStats then
+            _G.TogglePerfStats(Value)
+        end
+        userSettings.PerfStatsToggle = Value
+        saveSettings(userSettings)
         Rayfield:Notify({
-            Title = "✅ Script Loaded",
-            Content = "Eazvy Hub",
-            Duration = 3
+            Title = "⚙️ Settings Updated",
+            Content = "FPS Display: " .. (Value and "ENABLED" or "DISABLED"),
+            Duration = 2
         })
     end
 })
 
-OtherTab:CreateButton({
-    Name = "INF YIELD (VISUAL)",
-    Callback = function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+print ("PROSES")
+print ("https://discord.gg/Hsk4Q5KY2b")
+
+-- Toggle untuk Auto Execute
+local autoExecToggle = SettingsTab:CreateToggle({
+    Name = "🔧 Auto Execute Script",
+    CurrentValue = userSettings.AutoExecuteToggle,
+    Flag = "AutoExecuteToggle",
+    Callback = function(Value)
+        _G.AutoExecuteEnabled = Value
+        userSettings.AutoExecuteToggle = Value
+        saveSettings(userSettings)
         Rayfield:Notify({
-            Title = "✅ Script Loaded",
-            Content = "INF YIELD",
-            Duration = 3
+            Title = "⚙️ Settings Updated",
+            Content = "Auto Execute: " .. (Value and "ENABLED" or "DISABLED"),
+            Duration = 2
         })
     end
 })
 
-OtherTab:CreateButton({
-    Name = "WALK BYPASS (FE)",
+-- Reset Settings Button
+SettingsTab:CreateButton({
+    Name = "🔄 Reset All Settings",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/robloxonly981-gif/hjdf/refs/heads/main/n"))()
-        Rayfield:Notify({
-            Title = "✅ Script Loaded",
-            Content = "WALK BYPASS (BISA SETTING SPEED)",
-            Duration = 3
-        })
-    end
-})
-
-OtherTab:CreateButton({
-    Name = "HITBOX",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/APAJE-PRJT/fjg/refs/heads/main/n"))()
-        Rayfield:Notify({
-            Title = "✅ Script Loaded",
-            Content = "HITBOX",
-            Duration = 3
-        })
-    end
-})
-
-OtherTab:CreateButton({
-    Name = "FAKE DONATE (gasemua bisa)",
-    Callback = function()
-        loadstring(game:HttpGet("https://pastefy.app/4iqtSMB6/raw"))()
-        Rayfield:Notify({
-            Title = "✅ Script Loaded",
-            Content = "FAKE DONATE",
-            Duration = 3
-        })
-    end
-})
-
-
--- ===== SCRIPT VIOLANCE =====
-OtherTab:CreateParagraph({
-    Title = "SAVE TELEPORT (NEW UPDATE)",
-    Content = "BY NANAO"
-})
-
-OtherTab:CreateButton({
-    Name = "SAVE TELEPORT (NEW UPDATE)",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/APAJE-PRJT/TELEPORT-TAMA/refs/heads/main/n"))()
-        Rayfield:Notify({
-            Title = "✅ Script LOADED",
-            Content = "SCRIPT GA SAVED CHECKPOINT OTOMATIS",
-            Duration = 3
-        })
-    end
-})
-
--- ===== NOTES (BUTTON DISCORD) =====
-NotesTab:CreateButton({
-    Name = "📢 Join Discord",
-    Callback = function()
-        setclipboard("https://discord.gg/Hsk4Q5KY2b")
-        Rayfield:Notify({
-            Title = "📋 Discord Copied",
-            Content = "Link Discord disalin ke clipboard",
-            Duration = 4
-            
-        })
+        userSettings = {
+            PerfStatsToggle = true,
+            AutoExecuteToggle = true,
+            DiscordCopied = false
+        }
+        saveSettings(userSettings)
         
+        -- Update toggles UI
+        fpsToggle:Set(true)
+        autoExecToggle:Set(true)
+        
+        Rayfield:Notify({
+            Title = "✅ Settings Reset",
+            Content = "All settings have been reset to default",
+            Duration = 3
+        })
     end
-    
-})
-
--- NOTES TAMBAHAN
-NotesTab:CreateParagraph({
-    Title = "⭐ NOTES FOR VIP NANAO GAMES",
-    Content = "JANGAN LUPA KIRIM FEEDBACK KE DISCORD ⭐"
 })
 
 -- ===== DATA GUNUNG =====
 local Mountains = {
-    ["⛰️ MT ALLSTARS V2"] = { placeId = 118462881909065, script = "https://raw.githubusercontent.com/robloxonly981-gif/DFHS/refs/heads/main/n" },
-    ["⛰️ MT YAGESYA V.02"] = { placeId = 82748630433642, script = "https://raw.githubusercontent.com/robloxonly981-gif/yyilyu/refs/heads/main/n" },
-    ["⛰️ MT ERATO(PAKE EMOTE)"] = { placeId = 115911109949585, script = "https://raw.githubusercontent.com/robloxonly981-gif/chj/refs/heads/main/n" },
-    ["⛰️ MT GEBOK"] = { placeId = 79510160133540, script = "https://raw.githubusercontent.com/robloxonly981-gif/hjk/refs/heads/main/n" },
-    ["⛰️ MT MOROHMOY"] = { placeId = 101195512432960, script = "https://raw.githubusercontent.com/robloxonly981-gif/agfdhd/refs/heads/main/n" },
-    ["🚀 MT SPACE X"] = { placeId = 137704808682889, script = "https://raw.githubusercontent.com/robloxonly981-gif/jig/refs/heads/main/n" },
-    ["🌈 MT RAINBOW RUSH"] = { placeId = 99041455205954, script = "https://raw.githubusercontent.com/robloxonly981-gif/ghk/refs/heads/main/n" },
-    ["⭐ MT APEXIA V2"] = { placeId = 140438064820571, script = "https://raw.githubusercontent.com/NanaoGames/fgdj/refs/heads/main/n" },
-    ["🌲 MT JASUN"] = { placeId = 74503112625421, script = "https://raw.githubusercontent.com/NanaoGames/sdg/refs/heads/main/n" },
-    ["⚡ MT VELORA"] = { placeId = 135285569232987, script = "https://raw.githubusercontent.com/NanaoGames/zgdh/refs/heads/main/n" },
-    ["😇 MT MALAIKAT"] = { placeId = 105171425275249, script = "https://raw.githubusercontent.com/NanaoGames/sfh/refs/heads/main/n" },
-    ["🦊 MT WEK"] = { placeId = 127804672565817, script = "https://raw.githubusercontent.com/NanaoGames/gj/refs/heads/main/N" },
-    ["🧸 MT YUBI"] = { placeId = 135461240473398, script = "https://raw.githubusercontent.com/NanaoGames/fgsa/refs/heads/main/n" },
-    ["🗡️ MT SANGKALA"] = { placeId = 103721108378972, script = "https://raw.githubusercontent.com/NanaoGames/fgj/refs/heads/main/n" },
-    ["🐉 MT YAHIHI"] = { placeId = 94315512267840, script = "https://raw.githubusercontent.com/NanaoGames/NS/refs/heads/main/n" },
-    ["🛡️ MT SENOUK"] = { placeId = 88212905513897, script = "https://raw.githubusercontent.com/NanaoGames/NVM/refs/heads/main/n" },
-    ["🎨 MT FREESTYLE"] = { placeId = 92443799068611, script = "https://raw.githubusercontent.com/NanaoGames/dfh/refs/heads/main/n" },
-    ["🌙 MT LUNA"] = { placeId = 121884748950811, script = "https://raw.githubusercontent.com/NanaoGames/DH/refs/heads/main/n" },
-    ["🌊 MT WARU MADURA"] = { placeId = 105855907499823, script = "https://raw.githubusercontent.com/NanaoGames/GL/refs/heads/main/n" },
-    ["🪐 MT YEROO"] = { placeId = 130617502755072, script = "https://raw.githubusercontent.com/NanaoGames/jf/refs/heads/main/n" },
-    ["💎 MT GEMI"] = { placeId = 117948254364533, script = "https://raw.githubusercontent.com/NanaoGames/ghj/refs/heads/main/n" },
-    ["💎 MT GEMAS"] = { placeId = 98363466800903, script = "https://raw.githubusercontent.com/NanaoGames/b/refs/heads/main/n" },
-    ["🍹 MT BIKINI BOTTOM"] = { placeId = 139801759395171, script = "https://raw.githubusercontent.com/NanaoGames/V/refs/eads/main/n" },
-    ["🎬 MT GHIBLI"] = { placeId = 78106422901523, script = "https://raw.githubusercontent.com/NanaoGames/yuju/refs/heads/main/N" },
-    ["🏎️ MT GASPOL"] = { placeId = 90863151616496, script = "https://raw.githubusercontent.com/NanaoGames/XCV/refs/heads/main/n" },
-    ["🌸 MT CHAOS BLOOM"] = { placeId = 115222215967412, script = "https://raw.githubusercontent.com/NanaoGames/SDF/refs/heads/main/z" },
-    ["☁️ MT NEBYA"] = { placeId = 106607455396539, script = "https://raw.githubusercontent.com/NanaoGames/xdd/refs/heads/main/dsf" },
-    ["🌲 MT KANALA"] = { placeId = 113588945154732, script = "https://raw.githubusercontent.com/NanaoGames/daf/refs/heads/main/xxx" },
-    ["🎀 MT YAYAKIN"] = { placeId = 80945057902511, script = "https://raw.githubusercontent.com/NanaoGames/dsfgg/refs/heads/main/sfghg" },
-    ["🍺 MT BEJIRLAH"] = { placeId = 81414127122663, script = "https://raw.githubusercontent.com/NanaoGames/fdfhhh/refs/heads/main/dfgdfgh" },
-    ["⚙️ MT CAE - V 0.2"] = { placeId = 102098778968011, script = "https://raw.githubusercontent.com/NanaoGames/DSFDSGFH/refs/heads/main/sdgfgsd" },
-    ["🌅 MT ANAK SENJA"] = { placeId = 92677874290348, script = "https://raw.githubusercontent.com/NanaoGames/asdgfg/refs/heads/main/fsshh" },
-    ["🍾 MT BOTOL 3"] = { placeId = 123706448062527, script = "https://raw.githubusercontent.com/NanaoGames/SADWDFFGFF/refs/heads/main/ghjgsdss" },
-    ["🔥 MT HEARTH GANG V2"] = { placeId = 89224809507033, script = "https://raw.githubusercontent.com/NanaoGames/fgjgdst/refs/heads/main/adgahg" },
-    ["📈 MT LEVELING"] = { placeId = 80648193166443, script = "https://raw.githubusercontent.com/NanaoGames/sgadh/refs/heads/main/sfdgrj" },
-    ["😂 MT FUNNY"] = { placeId = 117345375295598, script = "https://raw.githubusercontent.com/robloxonly981-gif/adg/refs/heads/main/n" },
-    ["🌌 MT AETHERIA"] = { placeId = 97937285533780, script = "https://raw.githubusercontent.com/NanaoGames/hgdjdtyj/refs/heads/main/zdfh" },
-    ["🎵 MT FREESTYLE KZL"] = { placeId = 82019924787838, script = "https://raw.githubusercontent.com/NanaoGames/HJKFJ/refs/heads/main/gfstj" },
-    ["🏁 MT FST SPEEDRUN"] = { placeId = 82619747810196, script = "https://raw.githubusercontent.com/NanaoGames/ytjhgfd/refs/heads/main/gfsfg" },
-    ["🏡 MT KITA"] = { placeId = 133858780974321, script = "https://raw.githubusercontent.com/NanaoGames/asdfdgg/refs/heads/main/mountkita" },
-    ["🌀 MT MOLTI"] = { placeId = 126576119458766, script = "https://raw.githubusercontent.com/NanaoGames/edsfgh/refs/heads/main/fedfrg" },
-    ["🛠️ MT SETECU"] = { placeId = 78955895955272, script = "https://raw.githubusercontent.com/robloxonly981-gif/rfgas/refs/heads/main/dws" },
-    ["🌈 MT YAHHASU"] = { placeId = 80764768938398, script = "https://raw.githubusercontent.com/NanaoGames/yahadsfes/refs/heads/main/asd" },
-    ["🏙️ MT SADEWA CITY"] = { placeId = 99851482652804, script = "https://raw.githubusercontent.com/NanaoGames/dsa/refs/heads/main/sddd" },
-    ["💖 MT YAHAYUK PINK"] = { placeId = 133280992386451, script = "https://raw.githubusercontent.com/NanaoGames/fhdf/refs/heads/main/n" },
-    ["🟣 MT YAHAYUK"] = { placeId = 76964310785698,script = "https://raw.githubusercontent.com/NanaoGames/xhk/refs/heads/main/n" },
-    ["🌠 MT VIRELLAN"] = { placeId = 75981225039808,script = "https://raw.githubusercontent.com/NanaoGames/sdjkjyf/refs/heads/main/z" }, 
+    ["⛰️ MT NICE TRY"] = { 
+        placeId = 86414532193973, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/gkdrf/refs/heads/main/N"
+    },
+    ["⭐ MT ALLSTARS V2"] = { 
+        placeId = 118462881909065, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/DFHS/refs/heads/main/n"
+    },
+    ["🌄 MT YAGESYA V.02"] = { 
+        placeId = 82748630433642, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/yyilyu/refs/heads/main/n"
+    },
+    ["💃 MT ERATO"] = { 
+        placeId = 115911109949585, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/chj/refs/heads/main/n"
+    },
+    ["🪨 MT GEBOK"] = { 
+        placeId = 79510160133540, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/hjk/refs/heads/main/n"
+    },
+    ["🌳 MT MOROHMOY"] = { 
+        placeId = 101195512432960, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/agfdhd/refs/heads/main/n"
+    },
+    ["🚀 MT SPACE X"] = { 
+        placeId = 137704808682889, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/jig/refs/heads/main/n"
+    },
+    ["🌈 MT RAINBOW RUSH"] = { 
+        placeId = 99041455205954, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/ghk/refs/heads/main/n"
+    },
+    ["🌟 MT APEXIA V2"] = { 
+        placeId = 140438064820571, 
+        script = "https://raw.githubusercontent.com/NanaoGames/fgdj/refs/heads/main/n"
+    },
+    ["🌲 MT JASUN"] = { 
+        placeId = 74503112625421, 
+        script = "https://raw.githubusercontent.com/NanaoGames/sdg/refs/heads/main/n"
+    },
+    ["⚡ MT VELORA"] = { 
+        placeId = 135285569232987, 
+        script = "https://raw.githubusercontent.com/NanaoGames/zgdh/refs/heads/main/n"
+    },
+    ["😇 MT MALAIKAT"] = { 
+        placeId = 105171425275249, 
+        script = "https://raw.githubusercontent.com/NanaoGames/sfh/refs/heads/main/n"
+    },
+    ["🦊 MT WEK"] = { 
+        placeId = 127804672565817, 
+        script = "https://raw.githubusercontent.com/NanaoGames/gj/refs/heads/main/N"
+    },
+    ["🧸 MT YUBI"] = { 
+        placeId = 135461240473398, 
+        script = "https://raw.githubusercontent.com/NanaoGames/fgsa/refs/heads/main/n"
+    },
+    ["🗡️ MT SANGKALA"] = { 
+        placeId = 103721108378972, 
+        script = "https://raw.githubusercontent.com/NanaoGames/fgj/refs/heads/main/n"
+    },
+    ["🐉 MT YAHIHI"] = { 
+        placeId = 94315512267840, 
+        script = "https://raw.githubusercontent.com/NanaoGames/NS/refs/heads/main/n"
+    },
+    ["🛡️ MT SENOUK"] = { 
+        placeId = 88212905513897, 
+        script = "https://raw.githubusercontent.com/NanaoGames/NVM/refs/heads/main/n"
+    },
+    ["🎨 MT FREESTYLE"] = { 
+        placeId = 92443799068611, 
+        script = "https://raw.githubusercontent.com/NanaoGames/dfh/refs/heads/main/n"
+    },
+    ["🌙 MT LUNA"] = { 
+        placeId = 121884748950811, 
+        script = "https://raw.githubusercontent.com/NanaoGames/DH/refs/heads/main/n"
+    },
+    ["🌊 MT WARU MADURA"] = { 
+        placeId = 105855907499823, 
+        script = "https://raw.githubusercontent.com/NanaoGames/GL/refs/heads/main/n"
+    },
+    ["🪐 MT YEROO"] = { 
+        placeId = 130617502755072, 
+        script = "https://raw.githubusercontent.com/NanaoGames/jf/refs/heads/main/n"
+    },
+    ["💎 MT GEMI"] = { 
+        placeId = 117948254364533, 
+        script = "https://raw.githubusercontent.com/NanaoGames/ghj/refs/heads/main/n"
+    },
+    ["💎 MT GEMAS"] = { 
+        placeId = 98363466800903, 
+        script = "https://raw.githubusercontent.com/NanaoGames/b/refs/heads/main/n"
+    },
+    ["🍹 MT BIKINI BOTTOM"] = { 
+        placeId = 139801759395171, 
+        script = "https://raw.githubusercontent.com/NanaoGames/V/refs/eads/main/n"
+    },
+    ["🎬 MT GHIBLI"] = { 
+        placeId = 78106422901523, 
+        script = "https://raw.githubusercontent.com/NanaoGames/yuju/refs/heads/main/N"
+    },
+    ["🏎️ MT GASPOL"] = { 
+        placeId = 90863151616496, 
+        script = "https://raw.githubusercontent.com/NanaoGames/XCV/refs/heads/main/n"
+    },
+    ["🌸 MT CHAOS BLOOM"] = { 
+        placeId = 115222215967412, 
+        script = "https://raw.githubusercontent.com/NanaoGames/SDF/refs/heads/main/z"
+    },
+    ["☁️ MT NEBYA"] = { 
+        placeId = 106607455396539, 
+        script = "https://raw.githubusercontent.com/NanaoGames/xdd/refs/heads/main/dsf"
+    },
+    ["🌲 MT KANALA"] = { 
+        placeId = 113588945154732, 
+        script = "https://raw.githubusercontent.com/NanaoGames/daf/refs/heads/main/xxx"
+    },
+    ["🎀 MT YAYAKIN"] = { 
+        placeId = 80945057902511, 
+        script = "https://raw.githubusercontent.com/NanaoGames/dsfgg/refs/heads/main/sfghg"
+    },
+    ["🍺 MT BEJIRLAH"] = { 
+        placeId = 81414127122663, 
+        script = "https://raw.githubusercontent.com/NanaoGames/fdfhhh/refs/heads/main/dfgdfgh"
+    },
+    ["⚙️ MT CAE - V 0.2"] = { 
+        placeId = 102098778968011, 
+        script = "https://raw.githubusercontent.com/NanaoGames/DSFDSGFH/refs/heads/main/sdgfgsd"
+    },
+    ["🌅 MT ANAK SENJA"] = { 
+        placeId = 92677874290348, 
+        script = "https://raw.githubusercontent.com/NanaoGames/asdgfg/refs/heads/main/fsshh"
+    },
+    ["🍾 MT BOTOL 3"] = { 
+        placeId = 123706448062527, 
+        script = "https://raw.githubusercontent.com/NanaoGames/SADWDFFGFF/refs/heads/main/ghjgsdss"
+    },
+    ["🔥 MT HEARTH GANG V2"] = { 
+        placeId = 89224809507033, 
+        script = "https://raw.githubusercontent.com/NanaoGames/fgjgdst/refs/heads/main/adgahg"
+    },
+    ["📈 MT LEVELING"] = { 
+        placeId = 80648193166443, 
+        script = "https://raw.githubusercontent.com/NanaoGames/sgadh/refs/heads/main/sfdgrj"
+    },
+    ["😂 MT FUNNY"] = { 
+        placeId = 117345375295598, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/adg/refs/heads/main/n"
+    },
+    ["🌌 MT AETHERIA"] = { 
+        placeId = 97937285533780, 
+        script = "https://raw.githubusercontent.com/NanaoGames/hgdjdtyj/refs/heads/main/zdfh"
+    },
+    ["🎵 MT FREESTYLE KZL"] = { 
+        placeId = 82019924787838, 
+        script = "https://raw.githubusercontent.com/NanaoGames/HJKFJ/refs/heads/main/gfstj"
+    },
+    ["🏁 MT FST SPEEDRUN"] = { 
+        placeId = 82619747810196, 
+        script = "https://raw.githubusercontent.com/NanaoGames/ytjhgfd/refs/heads/main/gfsfg"
+    },
+    ["🏡 MT KITA"] = { 
+        placeId = 133858780974321, 
+        script = "https://raw.githubusercontent.com/NanaoGames/asdfdgg/refs/heads/main/mountkita"
+    },
+    ["🌀 MT MOLTI"] = { 
+        placeId = 126576119458766, 
+        script = "https://raw.githubusercontent.com/NanaoGames/edsfgh/refs/heads/main/fedfrg"
+    },
+    ["🛠️ MT SETECU"] = { 
+        placeId = 78955895955272, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/rfgas/refs/heads/main/dws"
+    },
+    ["🌈 MT YAHHASU"] = { 
+        placeId = 80764768938398, 
+        script = "https://raw.githubusercontent.com/NanaoGames/yahadsfes/refs/heads/main/asd"
+    },
+    ["🏙️ MT SADEWA CITY"] = { 
+        placeId = 99851482652804, 
+        script = "https://raw.githubusercontent.com/NanaoGames/dsa/refs/heads/main/sddd"
+    },
+    ["💖 MT YAHAYUK PINK"] = { 
+        placeId = 133280992386451, 
+        script = "https://raw.githubusercontent.com/NanaoGames/fhdf/refs/heads/main/n"
+    },
+    ["🟣 MT YAHAYUK"] = { 
+        placeId = 76964310785698,
+        script = "https://raw.githubusercontent.com/NanaoGames/xhk/refs/heads/main/n"
+    },
+    ["🌠 MT VIRELLAN"] = { 
+        placeId = 75981225039808,
+        script = "https://raw.githubusercontent.com/NanaoGames/sdjkjyf/refs/heads/main/z"
+    },
 }
 
-
--- ===== TOTAL =====
+-- ===== TOTAL COUNT =====
 local total = 0
 for _ in pairs(Mountains) do total += 1 end
 
 Tab:CreateParagraph({
-    Title = "📊 TOTAL GUNUNG",
-    Content = tostring(total)
+    Title = "📊 Total Mountains",
+    Content = tostring(total) .. " Available"
 })
 
--- ===== BUTTONS (BUAT SEKALI) =====
-local Buttons = {}
-
-local function ExecuteMountain(name, data)
-    if not data.script or data.script == "" then
-        Rayfield:Notify({
-            Title = "⚠️ Script Kosong",
-            Content = name,
-            Duration = 3
-        })
-        return
+-- ===== CREATE MOUNTAIN BUTTONS =====
+local function CreateMountainButtons()
+    local sortedMountains = {}
+    for name, _ in pairs(Mountains) do
+        table.insert(sortedMountains, name)
     end
-    loadstring(game:HttpGet(data.script))()
+    table.sort(sortedMountains)
+    
+    for _, name in ipairs(sortedMountains) do
+        local data = Mountains[name]
+        Tab:CreateButton({
+            Name = name,
+            Callback = function()
+                if data.script and data.script ~= "" then
+                    Rayfield:Notify({
+                        Title = "⏳ Loading...",
+                        Content = "Executing " .. name,
+                        Duration = 2
+                    })
+                    loadstring(game:HttpGet(data.script))()
+                else
+                    Rayfield:Notify({
+                        Title = "⚠️ Script Not Available",
+                        Content = name,
+                        Duration = 3
+                    })
+                end
+            end
+        })
+    end
 end
 
-for name, data in pairs(Mountains) do
-    Buttons[name] = Tab:CreateButton({
-        Name = name,
+-- Create buttons dengan delay untuk mengurangi lag
+task.spawn(function()
+    wait(1)
+    CreateMountainButtons()
+end)
+
+-- ===== AUTO EXECUTE FUNCTION =====
+local function AutoExecuteDetectedMap()
+    if not userSettings.AutoExecuteToggle then
+        return false, nil
+    end
+    
+    for name, data in pairs(Mountains) do
+        if data.placeId == placeId then
+            Rayfield:Notify({
+                Title = "🏔️ Map Detected!",
+                Content = "Auto executing: " .. name,
+                Duration = 4
+            })
+            
+            task.wait(1)
+            
+            if data.script and data.script ~= "" then
+                loadstring(game:HttpGet(data.script))()
+            end
+            
+            return true, name
+        end
+    end
+    return false, nil
+end
+
+-- ===== OTHER SCRIPTS =====
+OtherTab:CreateSection("📦 Universal Scripts")
+
+local universalScripts = {
+    ["🎭 Eazvy Hub | Animation & Emotes (FE)"] = "https://raw.githubusercontent.com/Eazvy/public-scripts/main/Universal_Animations_Emotes.lua",
+    ["⚡ INF YIELD (VISUAL)"] = "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source",
+    ["🚶 WALK BYPASS (FE)"] = "https://raw.githubusercontent.com/robloxonly981-gif/hjdf/refs/heads/main/n",
+    ["🎯 HITBOX"] = "https://raw.githubusercontent.com/APAJE-PRJT/fjg/refs/heads/main/n",
+    ["💰 FAKE DONATE"] = "https://pastefy.app/4iqtSMB6/raw",
+    ["📍 SAVE TELEPORT (NEW)"] = "https://raw.githubusercontent.com/APAJE-PRJT/TELEPORT-TAMA/refs/heads/main/n",
+}
+
+for scriptName, scriptUrl in pairs(universalScripts) do
+    OtherTab:CreateButton({
+        Name = scriptName,
         Callback = function()
-            ExecuteMountain(name, data)
+            Rayfield:Notify({
+                Title = "⏳ Loading...",
+                Content = scriptName,
+                Duration = 2
+            })
+            loadstring(game:HttpGet(scriptUrl))()
         end
     })
 end
 
--- ===== AUTO DETECT + ⭐ HIGHLIGHT =====
-for name, data in pairs(Mountains) do
-    if (data.placeId ~= 0 and data.placeId == placeId) or mapName:find(name) then
+-- ===== DISCORD BUTTON =====
+SettingsTab:CreateSection("🌐 Community")
+
+SettingsTab:CreateButton({
+    Name = "📢 Join Discord Server",
+    Callback = function()
+        setclipboard("https://discord.gg/Hsk4Q5KY2b")
+        userSettings.DiscordCopied = true
+        saveSettings(userSettings)
         Rayfield:Notify({
-            Title = "⭐ Map Detected",
-            Content = name,
-            Duration = 5
+            Title = "📋 Discord Copied",
+            Content = "Link copied to clipboard!",
+            Duration = 3
         })
-        if Buttons[name] then
-            Buttons[name]:SetName("⭐ "..name)
-        end
-        break
     end
+})
+
+-- ===== LOAD SETTINGS SAAT START =====
+local function LoadSavedSettings()
+    -- Apply FPS Display setting
+    if _G.TogglePerfStats then
+        _G.TogglePerfStats(userSettings.PerfStatsToggle)
+    end
+    
+    -- Apply Auto Execute setting
+    _G.AutoExecuteEnabled = userSettings.AutoExecuteToggle
+    
+    -- Notify user
+    Rayfield:Notify({
+        Title = "⚙️ Settings Loaded",
+        Content = "Loaded your previous settings",
+        Duration = 3
+    })
 end
+
+-- ===== WELCOME NOTIFICATION =====
+local function ShowWelcomeNotification()
+    local loadTime = os.date("%H:%M:%S")
+    local loadDate = os.date("%d/%m/%Y")
+    
+    Rayfield:Notify({
+        Title = "👋 Welcome, " .. player.DisplayName .. "!",
+        Content = "Script loaded at " .. loadTime .. "\nDate: " .. loadDate .. "\nSettings loaded from last session",
+        Duration = 5
+    })
+end
+
+-- ===== INITIALIZE =====
+task.spawn(function()
+    wait(2)
+    
+    -- Load saved settings
+    LoadSavedSettings()
+    
+    -- Tampilkan welcome
+    ShowWelcomeNotification()
+    
+    -- Cek auto execute
+    local detected, mapName = AutoExecuteDetectedMap()
+    
+    if detected then
+        Rayfield:Notify({
+            Title = "✅ Execute Complete",
+            Content = "Map: " .. mapName .. "\nExecuted successfully!",
+            Duration = 4
+        })
+    else
+        Rayfield:Notify({
+            Title = "ℹ️ Ready to Use",
+            Content = "Auto Execute Bisa Di Off In Di Settings : " .. (userSettings.AutoExecuteToggle and "ENABLED" or "DISABLED"),
+            Duration = 3
+        })
+    end
+end)
+
+-- Export settings function
+_G.GetUserSettings = function()
+    return userSettings
+end
+
+_G.UpdateUserSettings = function(newSettings)
+    for key, value in pairs(newSettings) do
+        userSettings[key] = value
+    end
+    saveSettings(userSettings)
+    return true
+end
+
+-- Auto-save ketika game ditutup
+game:BindToClose(function()
+    saveSettings(userSettings)
+end)
+
+-- ===== CREDITS =====
+SettingsTab:CreateSection("📝 Credits")
+SettingsTab:CreateParagraph({
+    Title = "Developed by Nanao Games",
+    Content = "xzxzxzxzxzxzxzxz : " .. os.date("%d/%m/%Y")
+})
+
+print ("SCRIPT BERHASIL BERJALAN")
+print ("Jika Berat Silahkan Hubungi Admin")
+print ("https://discord.gg/Hsk4Q5KY2b")
+print ("https://discord.gg/Hsk4Q5KY2b")
+print ("https://discord.gg/Hsk4Q5KY2b")
+print ("https://discord.gg/Hsk4Q5KY2b")
+print ("https://discord.gg/Hsk4Q5KY2b")
