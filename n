@@ -674,9 +674,10 @@ local function AutoExecuteDetectedMap()
 end
 
 -- ===== OTHER SCRIPTS =====
-OtherTab:CreateSection("📦 Universal Scripts")
+OtherTab:CreateSection("📦 Script")
 
-local universalScripts = {
+local Script = {
+    ["🐟 TELEPORT ISLAND FISH IT"] = "https://raw.githubusercontent.com/NanaoGames/tp-fish-it/refs/heads/main/n",
     ["🎭 Eazvy Hub | Animation & Emotes (FE)"] = "https://raw.githubusercontent.com/Eazvy/public-scripts/main/Universal_Animations_Emotes.lua",
     ["⚡ INF YIELD (VISUAL)"] = "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source",
     ["🚶 WALK BYPASS (FE)"] = "https://raw.githubusercontent.com/robloxonly981-gif/hjdf/refs/heads/main/n",
@@ -685,7 +686,7 @@ local universalScripts = {
     ["📍 SAVE TELEPORT (NEW)"] = "https://raw.githubusercontent.com/APAJE-PRJT/TELEPORT-TAMA/refs/heads/main/n",
 }
 
-for scriptName, scriptUrl in pairs(universalScripts) do
+for scriptName, scriptUrl in pairs(Script) do
     OtherTab:CreateButton({
         Name = scriptName,
         Callback = function()
