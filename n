@@ -301,9 +301,9 @@ local Window = Rayfield:CreateWindow({
     }
 })
 
-local Tab = Window:CreateTab("⛰️ Gunung", 4483362458)
-local OtherTab = Window:CreateTab("🛠️ Script Lainnya", 4483362458)
-local SettingsTab = Window:CreateTab("⚙️ Settings", 4483362458)
+local Tab = Window:CreateTab("⛰️ Gunung", 73269957566415)
+local OtherTab = Window:CreateTab("🛠️ Script Lainnya", 125383279695672)
+local SettingsTab = Window:CreateTab("⚙️ Settings", 80758916183665)
 
 -- ===== USER PROFILE =====
 local player = game.Players.LocalPlayer
