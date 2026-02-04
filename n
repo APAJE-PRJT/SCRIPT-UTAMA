@@ -405,7 +405,7 @@ local Mountains = {
     ["⛰️ MT NESE"] = { 
         placeId = 113775403988462, 
         script = "https://raw.githubusercontent.com/robloxonly981-gif/easfhg/refs/heads/main/n"
-    }
+    },
     ["⛰️ MT DELZA"] = { 
         placeId = 140713289419862, 
         script = "https://raw.githubusercontent.com/robloxonly981-gif/gjhk/refs/heads/main/n"
