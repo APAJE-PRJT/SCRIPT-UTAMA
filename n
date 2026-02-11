@@ -401,17 +401,206 @@ SettingsTab:CreateButton({
 })
 
 -- ===== DATA GUNUNG =====
-
--- ["⛰️ MT "] = { 
---       placeId = 113775403988462, 
---      script = ""
---   },
-
 local Mountains = {
-    
-    ["⛰️ MT GRAVITY"] = { 
-        placeId = 85492384581593, 
-        script = "https://raw.githubusercontent.com/robloxonly981-gif/fhfdgh/refs/heads/main/n"
+    ["⛰️ MT NESE"] = { 
+        placeId = 113775403988462, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/easfhg/refs/heads/main/n"
+    },
+    ["⛰️ MT DELZA"] = { 
+        placeId = 140713289419862, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/gjhk/refs/heads/main/n"
+    },
+    ["⛰️ MT NICE TRY"] = { 
+        placeId = 86414532193973, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/gkdrf/refs/heads/main/N"
+    },
+    ["⭐ MT ALLSTARS V2"] = { 
+        placeId = 118462881909065, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/DFHS/refs/heads/main/n"
+    },
+    ["🌄 MT YAGESYA V.02"] = { 
+        placeId = 82748630433642, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/yyilyu/refs/heads/main/n"
+    },
+    ["💃 MT ERATO"] = { 
+        placeId = 115911109949585, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/chj/refs/heads/main/n"
+    },
+    ["🪨 MT GEBOK"] = { 
+        placeId = 79510160133540, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/hjk/refs/heads/main/n"
+    },
+    ["🌳 MT MOROHMOY"] = { 
+        placeId = 101195512432960, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/agfdhd/refs/heads/main/n"
+    },
+    ["🚀 MT SPACE X"] = { 
+        placeId = 137704808682889, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/jig/refs/heads/main/n"
+    },
+    ["🌈 MT RAINBOW RUSH"] = { 
+        placeId = 99041455205954, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/ghk/refs/heads/main/n"
+    },
+    ["🌟 MT APEXIA V2"] = { 
+        placeId = 140438064820571, 
+        script = "https://raw.githubusercontent.com/NanaoGames/fgdj/refs/heads/main/n"
+    },
+    ["🌲 MT JASUN"] = { 
+        placeId = 74503112625421, 
+        script = "https://raw.githubusercontent.com/NanaoGames/sdg/refs/heads/main/n"
+    },
+    ["⚡ MT VELORA"] = { 
+        placeId = 135285569232987, 
+        script = "https://raw.githubusercontent.com/NanaoGames/zgdh/refs/heads/main/n"
+    },
+    ["😇 MT MALAIKAT"] = { 
+        placeId = 105171425275249, 
+        script = "https://raw.githubusercontent.com/NanaoGames/sfh/refs/heads/main/n"
+    },
+    ["🦊 MT WEK"] = { 
+        placeId = 127804672565817, 
+        script = "https://raw.githubusercontent.com/NanaoGames/gj/refs/heads/main/N"
+    },
+    ["🧸 MT YUBI"] = { 
+        placeId = 135461240473398, 
+        script = "https://raw.githubusercontent.com/NanaoGames/fgsa/refs/heads/main/n"
+    },
+    ["🗡️ MT SANGKALA"] = { 
+        placeId = 103721108378972, 
+        script = "https://raw.githubusercontent.com/NanaoGames/fgj/refs/heads/main/n"
+    },
+    ["🐉 MT YAHIHI"] = { 
+        placeId = 94315512267840, 
+        script = "https://raw.githubusercontent.com/NanaoGames/NS/refs/heads/main/n"
+    },
+    ["🛡️ MT SENOUK"] = { 
+        placeId = 88212905513897, 
+        script = "https://raw.githubusercontent.com/NanaoGames/NVM/refs/heads/main/n"
+    },
+    ["🎨 MT FREESTYLE"] = { 
+        placeId = 92443799068611, 
+        script = "https://raw.githubusercontent.com/NanaoGames/dfh/refs/heads/main/n"
+    },
+    ["🌙 MT LUNA"] = { 
+        placeId = 121884748950811, 
+        script = "https://raw.githubusercontent.com/NanaoGames/DH/refs/heads/main/n"
+    },
+    ["🌊 MT WARU MADURA"] = { 
+        placeId = 105855907499823, 
+        script = "https://raw.githubusercontent.com/NanaoGames/GL/refs/heads/main/n"
+    },
+    ["🪐 MT YEROO"] = { 
+        placeId = 130617502755072, 
+        script = "https://raw.githubusercontent.com/NanaoGames/jf/refs/heads/main/n"
+    },
+    ["💎 MT GEMI"] = { 
+        placeId = 117948254364533, 
+        script = "https://raw.githubusercontent.com/NanaoGames/ghj/refs/heads/main/n"
+    },
+    ["💎 MT GEMAS"] = { 
+        placeId = 98363466800903, 
+        script = "https://raw.githubusercontent.com/NanaoGames/b/refs/heads/main/n"
+    },
+    ["🍹 MT BIKINI BOTTOM"] = { 
+        placeId = 139801759395171, 
+        script = "https://raw.githubusercontent.com/NanaoGames/V/refs/eads/main/n"
+    },
+    ["🎬 MT GHIBLI"] = { 
+        placeId = 78106422901523, 
+        script = "https://raw.githubusercontent.com/NanaoGames/yuju/refs/heads/main/N"
+    },
+    ["🏎️ MT GASPOL"] = { 
+        placeId = 90863151616496, 
+        script = "https://raw.githubusercontent.com/NanaoGames/XCV/refs/heads/main/n"
+    },
+    ["🌸 MT CHAOS BLOOM"] = { 
+        placeId = 115222215967412, 
+        script = "https://raw.githubusercontent.com/NanaoGames/SDF/refs/heads/main/z"
+    },
+    ["☁️ MT NEBYA"] = { 
+        placeId = 106607455396539, 
+        script = "https://raw.githubusercontent.com/NanaoGames/xdd/refs/heads/main/dsf"
+    },
+    ["🌲 MT KANALA"] = { 
+        placeId = 113588945154732, 
+        script = "https://raw.githubusercontent.com/NanaoGames/daf/refs/heads/main/xxx"
+    },
+    ["🎀 MT YAYAKIN"] = { 
+        placeId = 80945057902511, 
+        script = "https://raw.githubusercontent.com/NanaoGames/dsfgg/refs/heads/main/sfghg"
+    },
+    ["🍺 MT BEJIRLAH"] = { 
+        placeId = 81414127122663, 
+        script = "https://raw.githubusercontent.com/NanaoGames/fdfhhh/refs/heads/main/dfgdfgh"
+    },
+    ["⚙️ MT CAE - V 0.2"] = { 
+        placeId = 102098778968011, 
+        script = "https://raw.githubusercontent.com/NanaoGames/DSFDSGFH/refs/heads/main/sdgfgsd"
+    },
+    ["🌅 MT ANAK SENJA"] = { 
+        placeId = 92677874290348, 
+        script = "https://raw.githubusercontent.com/NanaoGames/asdgfg/refs/heads/main/fsshh"
+    },
+    ["🍾 MT BOTOL 3"] = { 
+        placeId = 123706448062527, 
+        script = "https://raw.githubusercontent.com/NanaoGames/SADWDFFGFF/refs/heads/main/ghjgsdss"
+    },
+    ["🔥 MT HEARTH GANG V2"] = { 
+        placeId = 89224809507033, 
+        script = "https://raw.githubusercontent.com/NanaoGames/fgjgdst/refs/heads/main/adgahg"
+    },
+    ["📈 MT LEVELING"] = { 
+        placeId = 80648193166443, 
+        script = "https://raw.githubusercontent.com/NanaoGames/sgadh/refs/heads/main/sfdgrj"
+    },
+    ["😂 MT FUNNY"] = { 
+        placeId = 117345375295598, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/adg/refs/heads/main/n"
+    },
+    ["🌌 MT AETHERIA"] = { 
+        placeId = 97937285533780, 
+        script = "https://raw.githubusercontent.com/NanaoGames/hgdjdtyj/refs/heads/main/zdfh"
+    },
+    ["🎵 MT FREESTYLE KZL"] = { 
+        placeId = 82019924787838, 
+        script = "https://raw.githubusercontent.com/NanaoGames/HJKFJ/refs/heads/main/gfstj"
+    },
+    ["🏁 MT FST SPEEDRUN"] = { 
+        placeId = 82619747810196, 
+        script = "https://raw.githubusercontent.com/NanaoGames/ytjhgfd/refs/heads/main/gfsfg"
+    },
+    ["🏡 MT KITA"] = { 
+        placeId = 133858780974321, 
+        script = "https://raw.githubusercontent.com/NanaoGames/asdfdgg/refs/heads/main/mountkita"
+    },
+    ["🌀 MT MOLTI"] = { 
+        placeId = 126576119458766, 
+        script = "https://raw.githubusercontent.com/NanaoGames/edsfgh/refs/heads/main/fedfrg"
+    },
+    ["🛠️ MT SETECU"] = { 
+        placeId = 78955895955272, 
+        script = "https://raw.githubusercontent.com/robloxonly981-gif/rfgas/refs/heads/main/dws"
+    },
+    ["🌈 MT YAHHASU"] = { 
+        placeId = 80764768938398, 
+        script = "https://raw.githubusercontent.com/NanaoGames/yahadsfes/refs/heads/main/asd"
+    },
+    ["🏙️ MT SADEWA CITY"] = { 
+        placeId = 99851482652804, 
+        script = "https://raw.githubusercontent.com/NanaoGames/dsa/refs/heads/main/sddd"
+    },
+    ["💖 MT YAHAYUK PINK"] = { 
+        placeId = 133280992386451, 
+        script = "https://raw.githubusercontent.com/NanaoGames/fhdf/refs/heads/main/n"
+    },
+    ["🟣 MT YAHAYUK"] = { 
+        placeId = 76964310785698,
+        script = "https://raw.githubusercontent.com/NanaoGames/xhk/refs/heads/main/n"
+    },
+    ["🌠 MT VIRELLAN"] = { 
+        placeId = 75981225039808,
+        script = "https://raw.githubusercontent.com/NanaoGames/sdjkjyf/refs/heads/main/z"
     },
 }
 
